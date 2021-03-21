@@ -1,0 +1,16 @@
+/*	Practico 1 - Ejercicio 7:
+*/
+
+MAQUINA = (c5 -> (c5 -> (c5 -> comprar -> bebida_entregada -> STOP
+		  		 		|c10 -> comprar -> c5_de_vuelto -> bebida_entregada -> STOP
+		  		 		|c20 -> comprar -> c15_de_vuelto -> bebida_entregada -> STOP
+						)
+		  		 |c10 -> comprar -> bebida_entregada -> STOP
+		  		 |c20 -> comprar -> c10_de_vuelto -> bebida_entregada -> STOP
+				 )
+		  |c10 -> (c5 -> comprar -> bebida_entregada -> STOP
+		  		  |c10 -> comprar -> c5_de_vuelto -> bebida_entregada -> STOP
+		  		  |c20 -> comprar -> c15_de_vuelto -> bebida_entregada -> STOP
+				  )
+		  |c20 -> comprar -> c5_de_vuelto -> bebida_entregada -> STOP
+		  ).
