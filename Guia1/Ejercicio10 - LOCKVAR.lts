@@ -1,0 +1,39 @@
+/*
+	Practico 1 - Ejercicio 10:
+*/
+
+const CAPACIDAD = 0 	// Capacidad del museo
+range RANGO = 0..CAPACIDAD
+
+set VarAlpha = {value.{read[RANGO], write[RANGO], acquire, release}}
+
+VAR      		 = VAR[0],
+VAR[u:RANGO] = (read[u]    		 -> VAR[u]
+           		 |write[v:RANGO] -> VAR[v]
+           		 ).
+
+LOCK      = (acquire -> release -> LOCK).
+||LOCKVAR = (LOCK || VAR).
+
+EAST 			= (open   -> RUN_EAST),
+RUN_EAST  = (arrive -> INCREMENT
+            |close  -> EAST
+            ),
+INCREMENT = (value.acquire -> value.read[x:RANGO] -> value.write[x+1] -> value.release -> RUN_EAST
+            ) + VarAlpha.
+
+WEST 			= (open  -> RUN_WEST),
+RUN_WEST  = (leave -> DECREMENT
+            |close -> WEST
+            ),
+DECREMENT = (value.acquire -> value.read[x:RANGO] -> value.write[x-1] -> value.release -> RUN_WEST
+            ) + VarAlpha.
+
+CONTROL = (opening -> enable  -> open  -> CONTROL
+					|closing -> disable -> east.close -> CONTROL
+					).
+
+DIRECTOR = (opening -> closing -> DIRECTOR).
+
+||MUSEUM = (DIRECTOR || CONTROL || east:EAST || west:WEST || {east,west}::value:LOCKVAR)
+					 /{open /{east, west}.open}.

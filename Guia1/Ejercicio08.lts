@@ -1,0 +1,24 @@
+/*
+	Practico 1 - Ejercicio 8: Radio FM con tres controles
+*/
+
+range Mhz = 88..108
+set Bandas = {escuchando[Mhz], scan[Mhz]}
+
+RADIO = OFF,
+OFF = (on -> PAIRING),
+ON = (off -> OFF),
+PAIRING = (escuchando[108] -> SCAN[107]
+		  |escuchando[108] -> RESET
+		  |escuchando[108] -> ON
+		  ),
+SCAN[mhz:Mhz] = (when (mhz > 88) scan[mhz] -> (escuchando[mhz] -> SCAN[mhz-1]
+											  |escuchando[mhz] -> RESET
+											  |escuchando[mhz] -> ON
+											  )
+				|when (mhz == 88) scan[mhz] -> (escuchando[mhz] -> scan[108] -> PAIRING
+											   |escuchando[mhz] -> RESET
+											   |escuchando[mhz] -> ON
+											   )
+				),
+RESET = (reset -> PAIRING).

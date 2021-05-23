@@ -1,0 +1,33 @@
+/*
+	Practico 2 - Ejercicio 6:
+*/
+
+range BIN = 0..1
+
+TRANSMISOR        = INIT[0],
+INIT[nfts:BIN]    = (fnl                 -> SENDING[nfts]),
+SENDING[nfts:BIN] = (ida.tpl[nfts]       -> WAITING[nfts]),
+WAITING[nfts:BIN] = (timeout             -> SENDING[nfts]
+                    |vuelta.fpl[ack:BIN] ->
+                      if (ack != nfts) then
+                        SENDING[nfts]
+                      else
+                        INIT[1-nfts]
+                    ).
+
+RECEPTOR        = WAITING[0],
+WAITING[fe:BIN] = (ida.fpl[seq:BIN] ->
+                    if (seq == fe) then
+                      (tnl -> SEND_ACK[1-fe])
+                    else
+                      SEND_ACK[fe]
+                  ),
+SEND_ACK[fe:BIN] = (vuelta.tpl[1-fe] -> WAITING[fe]).
+
+CANAL = (tpl[i:BIN] -> (fpl[i] -> CANAL
+                       |perder -> CANAL
+                       )
+        ).
+
+||PAR = (TRANSMISOR || RECEPTOR || {ida,vuelta}:CANAL)
+          \{{ida,vuelta}.perder, timeout}.

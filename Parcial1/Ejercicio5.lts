@@ -1,0 +1,41 @@
+/*
+	Parcial 1 (2021) - Ejercicio 5-b:
+*/
+
+range RUEDAS = 1..2
+range EJES   = 1..2
+
+set CintaAlpha = {cinta1.{put, get, acquire, release}, cinta2.{put, get, acquire, release}}
+
+CINTA(N=5) = COUNT[0],
+COUNT[i:0..N] = (when (i<N) put -> COUNT[i+1]
+				|when (i>0) get -> COUNT[i-1]
+                ).
+
+LOCK      = (acquire -> release -> LOCK).
+||LOCKCINTA = (LOCK || CINTA).
+
+ENSAMBLAJE_1(R=2)         = ESPERAR_RUEDA[1],
+ESPERAR_RUEDA[r:RUEDAS]   = (rueda -> ENSAMBLAR_RUEDA[r]),
+ENSAMBLAR_RUEDA[r:RUEDAS] = (when (r<R) ensamblando_rueda[r] -> ESPERAR_RUEDA[r+1]
+                            |when (r>1) ensamblando_rueda[r] -> ENSAMBLAJE_1).
+
+SUJETADOR_1  = (eje -> EJE_SUJETADO),
+EJE_SUJETADO = (ensamblando_rueda[1] -> ensamblando_rueda[2] -> EJE_LISTO),
+EJE_LISTO    = (cinta1.acquire -> cinta1.put -> cinta1.release -> SUJETADOR_1)
+               + CintaAlpha.
+
+ENSAMBLAJE_2(E=2)     = ESPERAR_EJE[1],
+ESPERAR_EJE[e:EJES]   = (cinta1.acquire -> cinta1.get -> cinta1.release -> ENSAMBLAR_EJE[e]),
+ENSAMBLAR_EJE[e:EJES] = (when (e<E) ensamblando_eje[e] -> ESPERAR_EJE[e+1]
+                        |when (e>1) ensamblando_eje[e] -> ENSAMBLAJE_2)
+                        + CintaAlpha.
+
+SUJETADOR_2    = (tabla -> TABLA_SUJETADA),
+TABLA_SUJETADA = (ensamblando_eje[1] -> ensamblando_eje[2] -> TABLA_LISTA),
+TABLA_LISTA    = (cinta2.acquire -> cinta2.put -> cinta2.release -> SUJETADOR_2)
+                 + CintaAlpha.
+
+||PLANTA = (e1:ENSAMBLAJE_1 || s1:SUJETADOR_1 || e2:ENSAMBLAJE_2 || s2:SUJETADOR_2 || {s1,e2}::cinta1:LOCKCINTA || {s2}::cinta2:LOCKCINTA
+           )/{e1.ensamblando_rueda[i:RUEDAS]/s1.ensamblando_rueda[i],
+              e2.ensamblando_eje[i:EJES]/s2.ensamblando_eje[i]}.

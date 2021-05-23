@@ -1,0 +1,32 @@
+/*
+	Practico 1 - Ejercicio NoSe:
+*/
+
+set Products = {a, b, c, d}
+set PressProducts = {a, c, d}
+set DrillProducts = {b, c, d}
+
+BELT = (bring[p:Products] -> stop[p] -> lift[p] -> BELT).
+
+ARMIN = (lift[p:Products] -> (
+  when (p == 'a || p == 'c) press.acquire[p] -> press.place[p] -> ARMIN |
+  when (p == 'b || p == 'd) drill.acquire[p] -> drill.place[p] -> ARMIN)
+).
+
+ARMP2D = (press.extract.c -> drill.acquire.c -> drill.place.c -> ARMP2D).
+ARMD2P = (drill.extract.d -> press.acquire.d -> press.place.d -> ARMD2P).
+
+ARMOUT = (
+  press.extract[p:{a, d}] -> deposit[p] -> ARMOUT |
+  drill.extract[p:{b, c}] -> deposit[p] -> ARMOUT
+).
+
+PRESS = (acquire[p:PressProducts] -> place[p] -> process[p] -> extract[p] -> PRESS).
+DRILL = (acquire[p:DrillProducts] -> place[p] -> process[p] -> extract[p] -> DRILL).
+
+OUT = (deposit[p:Products] -> output[p] -> OUT).
+
+||CELL = (BELT || ARMIN || ARMP2D || ARMD2P || ARMOUT || press:PRESS || drill:DRILL || OUT) << {
+  press.extract.c, drill.acquire.c, drill.place.c, // Prioritizing
+  drill.extract.d, press.acquire.d, press.place.d
+}.

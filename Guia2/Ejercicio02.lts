@@ -1,0 +1,34 @@
+/*
+	Practico 2 - Ejercicio 2:
+*/
+
+const K = 2  // K accesos concurrentes a la variable
+// (K < N) y (K < M)
+const N = (K + 1) + 1 // N lectores
+const M = (K + 1) + 1 // M escritores
+
+range RANGE = 0..2 // Rango para VAR
+
+set VAR_ALPHA = {
+                 read[RANGE], write[RANGE],
+                 reader_acquire, reader_release,
+                 writer_acquire, writer_release
+                }
+
+VAR = VAR[0],
+VAR[u:RANGE] = (read[u]        -> VAR[u]
+               |write[v:RANGE] -> VAR[v]
+               ).
+
+CONTROL = CONTROL[0],
+CONTROL[v:0..K] = (when (v < K)  reader_acquire                   -> CONTROL[v + 1]
+                  |when (v > 0)  read[RANGE]    -> reader_release -> CONTROL[v - 1]
+                  |when (v == 0) writer_acquire -> read[u:RANGE] -> write[u] -> writer_release -> CONTROL[v]
+                  ) + VAR_ALPHA.
+
+READER = (reader_acquire -> read[RANGE] -> reader_release -> READER)
+         + VAR_ALPHA.
+WRITER = (writer_acquire -> read[u:RANGE] -> write[u] -> writer_release -> WRITER)
+         + VAR_ALPHA.
+
+||P = (r[1..N]:READER || w[1..M]:WRITER || {r[1..N],w[1..M]}::CONTROL || {w[1..M],r[1..N]}::VAR).

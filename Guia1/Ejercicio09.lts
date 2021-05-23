@@ -1,0 +1,11 @@
+/*
+	Practico 1 - Ejercicio 9:
+*/
+
+P = (a -> b -> P).
+Q = (c -> b -> Q).
+
+// Comentar la siguiente linea para probar S2.
+||S1 = (P || Q).
+
+S2 = (a -> c -> b -> S2 | c -> a -> b -> S2).

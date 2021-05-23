@@ -1,0 +1,16 @@
+/*
+	Practico 1 - Ejercicio 6: Sensor de nivel de agua
+*/
+
+const N = 9
+range T = 0..N
+const Init = 5
+set NivelAlpha = {bajo[0..1], normal[2..8], alto[9]}
+
+SENSOR = NIVEL[Init],
+NIVEL[n:0..1] = (when (n>0) bajo[n] -> NIVEL[n-1]
+				|bajo[n] -> NIVEL[n+1]),
+NIVEL[n:2..8] = (normal[n] -> NIVEL[n+1]
+				|normal[n] -> NIVEL[n-1]
+				),
+NIVEL[N] = (alto[N] -> NIVEL[N-1]).

@@ -1,0 +1,42 @@
+/*	
+	Practico 1 - Ejercicio 3: Modelar con FSP los diagramas
+*/
+
+// MEETING
+MEETING = (hello -> converse -> godbye -> STOP).
+
+// JOB
+JOB = (arrive -> work -> leave -> JOB).
+
+//GAME
+GAME = (one -> WIN 
+	   |two -> WIN
+	   |tree -> lose -> GAME),
+WIN =  (win -> GAME).
+
+// MOVIE
+MOVIE = (ahead -> (left -> STOP
+				  |rigth -> MOVIE
+				  )
+		).
+
+// FOURTICK
+FOURTICK = (tick -> tick -> tick -> tick -> STOP).
+
+// FOURTICK_ALTERNATIVO
+const N = 4
+range T = 0..N-1
+FOURTICK2 = COUNT[0],
+COUNT[c:T] = (when (c<N-1) tick -> COUNT[c+1]
+			 |when (c==N-1) tick -> STOP).
+
+// DOUBLE
+const D = 3
+DOUBLE = (in[i:1..D] -> out[i] -> DOUBLE).
+
+// PERSON
+PERSON = (weekend -> sleep -> (play -> PERSON
+							  |shop -> PERSON
+							  )
+		 |weekend -> sleep -> work -> PERSON
+		 ).

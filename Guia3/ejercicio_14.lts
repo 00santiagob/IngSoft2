@@ -1,0 +1,43 @@
+const True = 1
+const False = 0
+range Bool = False..True
+
+set BoolActions = {setTrue,setFalse,[False],[True]}
+
+BOOLVAR = VAL[False],
+VAL[v:Bool] = ( setTrue -> VAL[True]
+              | setFalse -> VAL[False]
+              | [v] -> VAL[v]
+              ).
+||FLAGS = (flag1:BOOLVAR||flag2:BOOLVAR).
+
+NEIGHBOUR1 = RAISE,
+RAISE = (flag1.setTrue -> ENTER),
+ENTER = (flag2.[False] -> enter1 -> EXIT 
+        |flag2.[True] -> LOWER
+        ),
+EXIT = (exit1 -> LOWER),
+LOWER = (flag1.setFalse -> NEIGHBOUR1).
+
+NEIGHBOUR2 = RAISE,
+RAISE = (flag2.setTrue -> ENTER),
+ENTER = (flag1.[False] -> enter2 -> EXIT 
+        |flag1.[True] -> LOWER
+        ),
+EXIT = (exit2 -> LOWER),
+LOWER = (flag2.setFalse -> NEIGHBOUR2).
+
+// this is the safety property for the field and check that it does
+// indeed ensure mutually exclusive access
+property MUTEX = (enter1 -> exit1 -> MUTEX
+                 |enter2 -> exit2 -> MUTEX
+                 ).
+
+progress ENTER1 = {enter1} // check progress for neighbour 1
+progress ENTER2 = {enter2} // check progress for neighbour 2
+
+
+||BLACKBERRYFIELD = (FLAGS || NEIGHBOUR1 || NEIGHBOUR2 || MUTEX).
+
+
+||GREEDY = BLACKBERRYFIELD << {flag1.setTrue, flag2.setTrue}.

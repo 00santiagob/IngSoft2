@@ -19,8 +19,8 @@ INCREMENT = (acquire
                )
              )+{read[T],write[T]}.
 
-||COUNTER = (INCREMENT||LOCK||VAR) @{increment}.
+||COUNTER = (INCREMENT || LOCK || VAR) @{increment}.
 
-||SHAREDCOUNTER = ({a,b}:INCREMENT || {a,b}::(LOCK||VAR)) @ {{a,b}.increment}.
+||SHAREDCOUNTER = ({a,b}:INCREMENT || {a,b}::(LOCK || VAR)) @ {{a,b}.increment}.
 
 ||C = SHAREDCOUNTER/{increment/{a,b}.increment}.

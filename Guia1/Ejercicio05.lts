@@ -1,0 +1,14 @@
+/*
+	Practico 1 - Ejercicio 5: Circuito Digital Biestable
+*/
+
+// Comprobar que se pueda usar la traza:
+// trigger -> 1 -> trigger -> 0 -> trigger -> 1 -> trigger -> 0 ...
+
+BIESTABLE = TRIGGER,
+TRIGGER = (trigger -> (zero -> UNO |
+					   uno -> ZERO
+					  )
+		  ),
+ZERO = (trigger -> zero -> UNO),
+UNO = (trigger -> uno -> ZERO).
