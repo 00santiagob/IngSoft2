@@ -80,6 +80,8 @@ pred orden_estricto[r:Rel] { //irreflexiva, transitiva y asimetrica
 
 // Ejercicio 5 - e) RELACION QUE TIENE PRIMER ELEMENTO
 pred primer_elemento[r:Rel] { // 
+	reflexiva[r]
+	transitiva[r]
 	
 }
 
@@ -97,10 +99,14 @@ run primer_elemento for 5 Elem, 1 Rel
 run ultimo_elemento for 5 Elem, 1 Rel
 
 // Todo orden parcial es total
-Parcial_es_Total: check {} for 5 Elem, 1 Rel
+Parcial_es_Total: check {
+	all r:Rel | orden_parcial[r] => orden_total[r]
+} for 5 Elem, 1 Rel
 
 // Todo orden parcial tiene primer elemento
-Parcial_tiene_PrimerElem: check {} for 5 Elem, 1 Rel
+Parcial_tiene_PrimerElem: check {
+	all r:Rel | primer_elemento[r] in orden_parcial[r]
+} for 5 Elem, 1 Rel
 
 // Todo orden total con primer elemento 'x' y ultimo elemento 'y' satisface (x != y)
 Total_PrimerElem_UltimoElem_distintos: check {} for 5 Elem, 1 Rel
