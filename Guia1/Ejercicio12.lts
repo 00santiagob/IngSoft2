@@ -1,0 +1,55 @@
+/*
+	Practico 1 - Ejercicio 12:
+*/
+
+CINTA (N=5)   = COUNT[0],
+COUNT[i:0..N] = (when (i<N) put_A -> COUNT[i+1]
+                |when (i<N) put_B -> COUNT[i+1]
+				|when (i>0) get_A -> COUNT[i-1]
+                |when (i>0) get_B -> COUNT[i-1]
+                ).
+
+BRAZO 		    = BRAZO_LIBRE,
+BRAZO_LIBRE     = (extraer_A -> BRAZO_OCUPADO_A
+                  |extraer_B -> BRAZO_OCUPADO_B),
+BRAZO_OCUPADO_A = (colocar_A -> BRAZO),
+BRAZO_OCUPADO_B = (colocar_B -> BRAZO).
+
+B1CONTROL = (put_A -> b1.extraer_A -> b1.colocar_A -> B1CONTROL
+            |put_B -> b1.extraer_B -> b1.colocar_B -> B1CONTROL
+            ).
+
+PRENSA 		   = PRENSA_LIBRE,
+PRENSA_LIBRE   = (colocar_A -> PRENSA_OCUPADA),
+PRENSA_OCUPADA = (prensar -> quitar_A -> PRENSA).
+
+TALADRO 	    = TALADRO_LIBRE,
+TALADRO_LIBRE   = (colocar_B  -> TALADRO_OCUPADA),
+TALADRO_OCUPADA = (taladrar -> quitar_B -> TALADRO).
+
+B2CONTROL = (quitar_A -> salida -> B2CONTROL
+            |quitar_B -> salida -> B2CONTROL
+            ).
+
+OBJ (O=10)  = OBJ[1],
+OBJ[o:1..O] = (when (o<O) put_A  -> OBJ[o+1]
+              |when (o<O) put_B  -> OBJ[o+1]
+              |when (o>1) salida -> OBJ[o-1]
+			  ).
+/*
+||B1 = (BRAZO || B1CONTROL)
+        /{extraer_A /get_A,
+          extraer_B /get_B}.
+
+||B2 = (BRAZO || B2CONTROL).
+*/
+
+||CELULA = (OBJ || CINTA || b1:BRAZO || B1CONTROL || PRENSA || b2:BRAZO || B2CONTROL)
+			/{b1.extraer_A /get_A,
+              b1.extraer_B /get_B,
+              b1.colocar_A /colocar_A,
+              b1.colocar_B /colocar_B,
+              b2.extraer_A /quitar_A,
+              b2.extraer_B /quitar_B,
+              salida /b2.{colocar_A, colocar_B}
+			 }.

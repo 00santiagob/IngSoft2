@@ -2,16 +2,16 @@
 	Practico 1 - Ejercicio 7: Maquina Expendedora
 */
 
-MAQUINA = (c5 -> (c5 -> (c5 -> comprar -> bebida_entregada -> MAQUINA
-		  		 		|c10 -> comprar -> c5_de_vuelto -> bebida_entregada -> MAQUINA
-		  		 		|c20 -> comprar -> c15_de_vuelto -> bebida_entregada -> MAQUINA
-						)
-		  		 |c10 -> comprar -> bebida_entregada -> MAQUINA
-		  		 |c20 -> comprar -> c10_de_vuelto -> bebida_entregada -> MAQUINA
-				 )
-		  |c10 -> (c5 -> comprar -> bebida_entregada -> MAQUINA
-		  		  |c10 -> comprar -> c5_de_vuelto -> bebida_entregada -> MAQUINA
-		  		  |c20 -> comprar -> c15_de_vuelto -> bebida_entregada -> MAQUINA
+MAQUINA = (c5 ->  (c5  -> (c5  -> comprar -> /*sin vuelto*/	  bebida_entregada -> MAQUINA
+		  		    	  |c10 -> comprar -> c5_de_vuelto  -> bebida_entregada -> MAQUINA
+		  		 		  |c20 -> comprar -> c15_de_vuelto -> bebida_entregada -> MAQUINA
+						  )
+		  		  |c10 -> /*...*/ comprar -> /*sin vuelto*/   bebida_entregada -> MAQUINA
+		  		  |c20 -> /*...*/ comprar -> c10_de_vuelto -> bebida_entregada -> MAQUINA
 				  )
-		  |c20 -> comprar -> c5_de_vuelto -> bebida_entregada -> MAQUINA
+		  |c10 -> (c5  -> /*...*/ comprar -> /*sin vuelto*/   bebida_entregada -> MAQUINA
+		  		  |c10 -> /*...*/ comprar -> c5_de_vuelto  -> bebida_entregada -> MAQUINA
+		  		  |c20 -> /*...*/ comprar -> c15_de_vuelto -> bebida_entregada -> MAQUINA
+				  )
+		  |c20 -> /*...........*/ comprar -> c5_de_vuelto  -> bebida_entregada -> MAQUINA
 		  ).

@@ -1,0 +1,24 @@
+/*
+	Practico 1 - Ejercicio 11:
+*/
+
+CINTA (N=5)   = COUNT[0],
+COUNT[i:0..N] = (when (i<N) put -> COUNT[i+1]
+				|when (i>0) get -> COUNT[i-1]
+                ).
+
+BRAZO 		  = BRAZO_LIBRE,
+BRAZO_LIBRE   = (extraer -> BRAZO_OCUPADO),
+BRAZO_OCUPADO = (colocar -> BRAZO).
+
+PRENSA 		   = PRENSA_LIBRE,
+PRENSA_LIBRE   = (colocar -> PRENSA_OCUPADA),
+PRENSA_OCUPADA = (prensar -> quitar -> PRENSA).
+
+OBJ_A (A=10)  = OBJ_A[1],
+OBJ_A[a:1..A] = (when (a<A) put    -> OBJ_A[a+1]
+				|when (a>1) salida -> OBJ_A[a-1]
+				).
+
+||CELULA = (OBJ_A || CINTA || b1:BRAZO || PRENSA || b2:BRAZO)
+			/{b1.extraer /get, b1.colocar /colocar, b2.extraer /quitar, salida /b2.colocar}.

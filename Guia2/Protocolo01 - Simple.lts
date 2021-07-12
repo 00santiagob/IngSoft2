@@ -1,0 +1,28 @@
+/*
+  Protocolo "Stop & Wait"
+*/
+
+/*  Eventos:
+  fnl (from network layer): recibe un dato
+  tnl (to network layer): envia un dato
+  fpl (from physical layer): recibe dato o acknowledgement (dependiendo de la direccion)
+  tpl (to physical layer): envia dato o acknowledgement (dependiendo de la direccion)
+*/
+
+/*  Variables:
+  data_in: informacion recibida de la entidad peer
+  data_out: informacion a transmitir hacia la entidad peer
+  ack: variable dummy para indicar reconocimiento
+*/
+
+TRANSMISOR = INIT,
+INIT       = (fnl -> SENDING),
+SENDING    = (tpl -> INIT).
+
+RECEPTOR = WAITING,
+WAITING  = (fpl -> SENDING),
+SENDING  = (tnl -> WAITING).
+
+CANAL = (tpl -> fpl -> CANAL).
+
+||PROTOCOL = (TRANSMISOR || CANAL || RECEPTOR).

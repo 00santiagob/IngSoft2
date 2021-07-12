@@ -1,5 +1,26 @@
 /*
 	Practico 2 - Ejercicio 6:
+
+  Protocolo de Reconocimiento Positivo con Retransmision: PAR
+    (“Positive Acknowledgement with Retransmission”)
+*/
+
+/*  Eventos:
+  fnl (from network layer): recibe un dato
+  tnl (to network layer): envia un dato
+  fpl (from physical layer): recibe <nro. sec. frame, dato> o ack ultimo frame recibido (dependiendo de la direccion)
+  tpl (to physical layer): envia <nro. sec. frame, dato> o ack ultimo frame recibido (dependiendo de la direccion)
+  start_timer: setea el timer
+  timeout: interrucpcion por excedente de tiempo
+*/
+
+/*  Variables:
+  data_in: informacion recibida de la entidad peer
+  data_out: informacion a transmitir hacia la entidad peer
+  ack  {0, 1}: nro. de frame reconocido
+  seq  {0, 1}: nro. de frame recibido
+  nfts {0, 1}: next frame to send
+  fe   {0, 1}: frame expected
 */
 
 range BIN = 0..1
@@ -24,6 +45,8 @@ WAITING[fe:BIN] = (ida.fpl[seq:BIN] ->
                   ),
 SEND_ACK[fe:BIN] = (vuelta.tpl[1-fe] -> WAITING[fe]).
 
+// fnl -> tpl -> fpl -> tnl (IDA)
+// tnl <- fpl <- tpl <- fnl (VUELTA)
 CANAL = (tpl[i:BIN] -> (fpl[i] -> CANAL
                        |perder -> CANAL
                        )

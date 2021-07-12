@@ -1,0 +1,40 @@
+/*
+	Practico 1 - Ejercicio 10 - LOCKVAR:
+*/
+
+const N = 5 // Capacidad del museo
+range R = 0..N
+
+set VarAlpha = {read[R], write[R], acquire, release}
+
+VAR      = VAR[0],
+VAR[u:R] = (read[u]    -> VAR[u]
+           |write[v:R] -> VAR[v]
+           ).
+
+LOCK = (acquire -> release -> LOCK).
+
+||LOCKVAR = (LOCK || VAR).
+
+EAST      = (open_door  -> RUN_EAST),
+RUN_EAST  = (arrive     -> INCREMENT
+            |close_door -> EAST
+            ),
+INCREMENT = (acquire -> read[x:0..N-1] -> write[x+1] -> release -> RUN_EAST
+            ) + VarAlpha.
+
+WEST      = (open_door  -> RUN_WEST),
+RUN_WEST  = (leave      -> DECREMENT
+            |close_door -> WEST
+            ),
+DECREMENT = (acquire -> read[x:1..N] -> write[x-1] -> release -> RUN_WEST
+            ) + VarAlpha.
+
+CONTROL = (open_up    -> open_door       -> CONTROL
+          |close_down -> east.close_door -> CONTROL
+          ).
+
+DIRECTOR = (open_up -> close_down -> DIRECTOR).
+
+||MUSEUM = (DIRECTOR || CONTROL || east:EAST || west:WEST || {east,west}::LOCKVAR)
+			/{open_door /{east, west}.open_door}.

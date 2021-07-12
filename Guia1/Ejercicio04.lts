@@ -12,7 +12,4 @@ set VarAlpha = {read[T],write[T]}
 VARIABLE = VARIABLE[0],
 VARIABLE[u:T] = (read[u] -> VARIABLE[u]
 				|write[v:T] -> VARIABLE[v]
-				).
-
-
-
+				) + VarAlpha.

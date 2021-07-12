@@ -14,9 +14,14 @@ GAME = (one -> WIN
 	   |tree -> lose -> GAME),
 WIN =  (win -> GAME).
 
+//GAME2
+GAME2 = ({one, two} -> WIN2
+	    |tree -> lose -> GAME2),
+WIN2 =  (win -> GAME2).
+
 // MOVIE
 MOVIE = (ahead -> (left -> STOP
-				  |rigth -> MOVIE
+                  |rigth -> MOVIE
 				  )
 		).
 

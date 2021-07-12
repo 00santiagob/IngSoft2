@@ -2,35 +2,35 @@
 	Practico 1 - Ejercicio 10:
 */
 
-const CAPACIDAD = 1 	// Capacidad del museo
-range RANGO = 0..CAPACIDAD
+const N = 5 // Capacidad del museo
+range R = 0..N
 
-set VarAlpha = {value.{read[RANGO], write[RANGO]}}
+set VarAlpha = {read[R], write[R]}
 
-VAR      		 = VAR[0],
-VAR[u:RANGO] = (read[u]    		 -> VAR[u]
-           		 |write[v:RANGO] -> VAR[v]
-           		 ).
+VAR      = VAR[0],
+VAR[u:R] = (read[u]    -> VAR[u]
+           |write[v:R] -> VAR[v]
+           ).
 
-EAST 			= (open   -> RUN_EAST),
-RUN_EAST  = (arrive -> INCREMENT
-            |close  -> EAST
+EAST 	  = (open_door  -> RUN_EAST),
+RUN_EAST  = (arrive     -> INCREMENT
+            |close_door -> EAST
             ),
-INCREMENT = (value.read[x:RANGO] -> value.write[x+1] -> RUN_EAST
+INCREMENT = (read[x:0..N-1] -> write[x+1] -> RUN_EAST
             ) + VarAlpha.
 
-WEST 			= (open  -> RUN_WEST),
-RUN_WEST  = (leave -> DECREMENT
-            |close -> WEST
+WEST 	  = (open_door  -> RUN_WEST),
+RUN_WEST  = (leave      -> DECREMENT
+            |close_door -> WEST
             ),
-DECREMENT = (value.read[x:RANGO] -> value.write[x-1] -> RUN_WEST
+DECREMENT = (read[x:1..N] -> write[x-1] -> RUN_WEST
             ) + VarAlpha.
 
-CONTROL = (opening -> enable  -> open  -> CONTROL
-					|closing -> disable -> east.close -> CONTROL
-					).
+CONTROL = (open_up    -> open_door       -> CONTROL
+		  |close_down -> east.close_door -> CONTROL
+		  ).
 
-DIRECTOR = (opening -> closing -> DIRECTOR).
+DIRECTOR = (open_up -> close_down -> DIRECTOR).
 
-||MUSEUM = (DIRECTOR || CONTROL || east:EAST || west:WEST || {east,west}::value:VAR)
-					 /{open /{east, west}.open}.
+||MUSEUM = (DIRECTOR || CONTROL || east:EAST || west:WEST || {east,west}::VAR)
+			/{open_door /{east, west}.open_door}.

@@ -9,7 +9,7 @@ set CintaAlpha = {cinta1.{put, get, acquire, release}, cinta2.{put, get, acquire
 
 CINTA(N=5) = COUNT[0],
 COUNT[i:0..N] = (when (i<N) put -> COUNT[i+1]
-				|when (i>0) get -> COUNT[i-1]
+				    |when (i>0) get -> COUNT[i-1]
                 ).
 
 LOCK      = (acquire -> release -> LOCK).

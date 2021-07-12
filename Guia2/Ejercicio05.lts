@@ -1,0 +1,24 @@
+/*
+	Practico 5:
+*/
+
+// Opcion 1:
+CANAL(Msg=5)  = COUNT[0],
+COUNT[i:0..Msg] = (when (i<Msg) send    -> COUNT[i+1]
+				  |when (i>0)   receive -> COUNT[i-1]
+				  ).
+
+//Opcion 2:
+UNCANAL = (send -> receive -> UNCANAL).
+
+||CANAL2(Msg=5) = ([1..Msg]:UNCANAL)
+				   /{send /[1].send,
+				   	 [i:2..Msg].send /[i-1].receive,
+				   	 receive /[Msg].receive
+				    }@{send, receive}.
+
+PRODUCTOR  = (send    -> PRODUCTOR).
+CONSUMIDOR = (receive -> CONSUMIDOR).
+
+||ASYNCMSG  = (PRODUCTOR || CANAL(5)  || CONSUMIDOR).
+||ASYNCMSG2 = (PRODUCTOR || CANAL2(5) || CONSUMIDOR).

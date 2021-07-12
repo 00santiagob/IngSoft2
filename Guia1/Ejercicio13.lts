@@ -2,31 +2,31 @@
 	Practico 1 - Ejercicio NoSe:
 */
 
-set Products = {a, b, c, d}
-set PressProducts = {a, c, d}
-set DrillProducts = {b, c, d}
+set Productos = {a, b, c, d}
+set ParaPrensar = {a, c, d}
+set ParaTaladrar = {b, c, d}
 
-BELT = (bring[p:Products] -> stop[p] -> lift[p] -> BELT).
+CINTA = (bring[p:Productos] -> stop[p] -> elevar[p] -> CINTA).
 
-ARMIN = (lift[p:Products] -> (
-  when (p == 'a || p == 'c) press.acquire[p] -> press.place[p] -> ARMIN |
-  when (p == 'b || p == 'd) drill.acquire[p] -> drill.place[p] -> ARMIN)
+BRAZOIN = (elevar[p:Productos] -> (
+  when (p == 'a || p == 'c) press.acquire[p] -> press.place[p] -> BRAZOIN |
+  when (p == 'b || p == 'd) drill.acquire[p] -> drill.place[p] -> BRAZOIN)
 ).
 
-ARMP2D = (press.extract.c -> drill.acquire.c -> drill.place.c -> ARMP2D).
-ARMD2P = (drill.extract.d -> press.acquire.d -> press.place.d -> ARMD2P).
+BRAZOP2D = (press.extraer.c -> drill.acquire.c -> drill.place.c -> BRAZOP2D).
+BRAZOD2P = (drill.extraer.d -> press.acquire.d -> press.place.d -> BRAZOD2P).
 
-ARMOUT = (
-  press.extract[p:{a, d}] -> deposit[p] -> ARMOUT |
-  drill.extract[p:{b, c}] -> deposit[p] -> ARMOUT
+BRAZOOUT = (
+  press.extraer[p:{a, d}] -> depositar[p] -> BRAZOOUT |
+  drill.extraer[p:{b, c}] -> depositar[p] -> BRAZOOUT
 ).
 
-PRESS = (acquire[p:PressProducts] -> place[p] -> process[p] -> extract[p] -> PRESS).
-DRILL = (acquire[p:DrillProducts] -> place[p] -> process[p] -> extract[p] -> DRILL).
+PRENSA  = (acquire[p:ParaPrensar] -> place[p] -> procesar[p] -> extraer[p] -> PRENSA).
+TALADRO = (acquire[p:ParaTaladrar] -> place[p] -> procesar[p] -> extraer[p] -> TALADRO).
 
-OUT = (deposit[p:Products] -> output[p] -> OUT).
+OUT = (depositar[p:Productos] -> salida[p] -> OUT).
 
-||CELL = (BELT || ARMIN || ARMP2D || ARMD2P || ARMOUT || press:PRESS || drill:DRILL || OUT) << {
-  press.extract.c, drill.acquire.c, drill.place.c, // Prioritizing
-  drill.extract.d, press.acquire.d, press.place.d
+||CELULA = (CINTA || BRAZOIN || BRAZOP2D || BRAZOD2P || BRAZOOUT || press:PRENSA || drill:TALADRO || OUT) << {
+  press.extraer.c, drill.acquire.c, drill.place.c, // Prioritizing
+  drill.extraer.d, press.acquire.d, press.place.d
 }.

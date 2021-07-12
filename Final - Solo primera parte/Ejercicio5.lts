@@ -1,0 +1,40 @@
+/*
+	Final (2021) - Ejercicio 5:
+*/
+// Inciso b)
+CINTA(N=5) = COUNT[0],
+COUNT[i:0..N] = (when (i<N) put -> COUNT[i+1]
+				|when (i>0) get -> COUNT[i-1]
+                ).
+
+ROBOT = (recargar_tolva -> llenando_tolva -> ROBOT).
+
+INYECTORA = (producir    -> depositar  -> INYECTORA
+			|no_material -> recargando -> INYECTORA
+			).
+
+ARMADOR = (retirar_recipiente -> ESPERANDO_TAPA
+		  |retirar_tapa 	  -> ESPERANDO_RECIPIENTE
+		  ),
+ESPERANDO_TAPA 	     = (retirar_tapa 	   -> ENSAMBLAR),
+ESPERANDO_RECIPIENTE = (retirar_recipiente -> ENSAMBLAR),
+ENSAMBLAR = (producto_ensamblado -> depositar -> ARMADOR).
+
+// PLANTA PRODUCTORA DE TAPERS = PPDT
+||PPDT = ([1..2]:ROBOT || [1..2]:INYECTORA || ARMADOR || [1..3]:CINTA(5))
+		 /{[i:1..2].recargar_tolva / [i].no_material,
+		   [i:1..2].llenando_tolva / [i].recargando,
+		   producir_recipiente     / [1].producir,
+		   producir_tapa           / [2].producir,
+		   depositar_recipiente    /{[1].depositar, [1].put},
+		   depositar_tapa		   /{[2].depositar, [2].put},
+		   retirar_recipiente      / [1].get,
+		   retirar_tapa            / [2].get,
+		   depositar_taper         /{depositar, [3].put},
+		   listo_para_embalar      / [3].get
+		 }.
+
+// Inciso c)
+progress PRODUCIR_TAPA       = {producir_tapa}
+progress PRODUCIR_RECIPIENTE = {producir_recipiente}
+progress PRODUCIR_TAPER      = {depositar_taper}
